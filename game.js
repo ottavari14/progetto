@@ -6,19 +6,13 @@ canvas.width = 800;
 canvas.height = 600;
 
 const canvasImg = new Image ();
-canvasImg.src= "https://imgbox.com/IGn3nH9s.png";
+canvasImg.src= "sfondo.png";
 
-const playerImg = new Image();
-playerImg.src = "https://imgbox.com/ATcQUhtG.png";
+avatar.src = 'ragazza.png';
+bombImage.src = 'bomba.png';
+palaceImage1.src = 'chiesa.png';
+palaceImage2.src = 'palazzata.png';
 
-const building1Img = new Image();
-building1Img.src = "https://imgbox.com/LJiAU0KR.png";
-
-const building2Img = new Image();
-building2Img.src = "https://imgbox.com/9yqbTecM.png";
-
-const bombImg = new Image();
-bombImg.src = "https://imgbox.com/PgEgyPbh.png";
 
 let player = {
     x: 350,
