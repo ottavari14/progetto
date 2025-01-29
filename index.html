@@ -3,19 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L'avvenire</title>
-    <link rel="stylesheet" href="style.css">
+    <title>L'Avvenire</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background-image: url('https://imgbox.com/IGn3nH9s');
+            background-size: cover;
+        }
+    </style>
 </head>
 <body>
-    <div id="game-container">
-     <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <canvas id="gameCanvas"></canvas>
 
-    </div>
-    <div id="game-over">
-        <h1>Game Over</h1>
-        <button id="retryButton">Riprova</button>
-    </div>
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
 
-    <script src="game.js"></script>
+        // Impostazioni del gioco
+        const canvasWidth = window.innerWidth;
+        const canvasHeight = window.innerHeight;
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+
+        const avatar = new Image();
+        avatar.src = 'https://imgbox.com/ATcQUhtG';
+
+        const bombImage = new Image();
+        bombImage.src = 'https://imgbox.com/PgEgyPbh';
+
+        const palaceImage1 = new Image();
+        palaceImage1.src = 'https://imgbox.com/LJiAU0KR';
+
+        const palaceImage2 = new Image();
+        palaceImage2.src = 'https://imgbox.com/9yqbTecM';
+
+        let avatarX = canvasWidth / 2;
+        let avatarY = canvasHeight - 100;
+        let avatarSpeed = 5;
+
+        let bombs = [];
+        let score = 0;
+        let lives = 3;
+        let gameOver = false;
+
+        const gravity = 0.5;
+        const bombSpeed = 2;
+        
+        // Funzione per disegnare il personaggio e le bombe
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Disegnare il palazzo
+            ctx.drawImage(palaceImage1, 100, canvasHeight - 150, 200, 150); // Palazzo 1
+            ctx.drawImage(palaceImage2, 500, canvasHeight - 200, 200, 200); // Palazzo 2
+
+            // Disegnare l'avatar
+            ctx.drawImage(avatar, avatarX - 50, avatarY - 75, 100, 100); 
+
+            // Disegnare le bombe
+            bombs.forEach(bomb => {
+                ctx.drawImage(bombImage, bomb.x, bomb.y, 50, 50);
+            });
+
+            // Disegnare il punteggio
+            ctx.fillStyle = "white";
+            ctx.font = "30px Arial";
+            ctx.fillText("Punteggio: " + score, 10, 30);
+            ctx.fillText("Vite: " + lives, canvasWidth - 150, 30);
+            
+            // Se il gioco è finito
+            if (gameOver) {
+                ctx.fillStyle = "red";
+                ctx.font = "50px Arial";
+                ctx.fillText("Game Over", canvasWidth / 2 - 150, canvasHeight / 2);
+                ctx.font = "30px Arial";
+                ctx.fillText("Clicca per riprovare", canvasWidth / 2 - 100, canvasHeight / 2 + 50);
+            }
+        }
+
+        // Funzione per aggiornare il gioco
+        function update() {
+            if (gameOver) return;
+
+            // Movimento dell'avatar
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'ArrowLeft' && avatarX > 50) {
+                    avatarX -= avatarSpeed;
+                } else if (event.key === 'ArrowRight' && avatarX < canvasWidth - 50) {
+                    avatarX += avatarSpeed;
+                }
+            });
+
+            // Aggiungere nuove bombe a intervalli
+            if (Math.random() < 0.05) {
+                let bombX = Math.random() * (canvasWidth - 50);
+                bombs.push({ x: bombX, y: 0 });
+            }
+
+            // Aggiornare la posizione delle bombe
+            bombs.forEach((bomb, index) => {
+                bomb.y += bombSpeed;
+                if (bomb.y > canvasHeight - 150 && bomb.x > 100 && bomb.x < 300) {
+                    // La bomba colpisce il primo palazzo
+                    score -= 100;
+                    lives--;
+                    bombs.splice(index, 1);
+                } else if (bomb.y > canvasHeight - 200 && bomb.x > 500 && bomb.x < 700) {
+                    // La bomba colpisce il secondo palazzo
+                    score -= 100;
+                    lives--;
+                    bombs.splice(index, 1);
+                } else if (bomb.y > canvasHeight) {
+                    bombs.splice(index, 1);
+                }
+            });
+
+            // Verifica Game Over
+            if (lives <= 0) {
+                gameOver = true;
+            }
+
+            draw();
+        }
+
+        // Funzione per gestire il click "Riprova"
+        canvas.addEventListener('click', function() {
+            if (gameOver) {
+                // Reset gioco
+                score = 0;
+                lives = 3;
+                gameOver = false;
+                bombs = [];
+            }
+        });
+
+        // Avvia il gioco
+        function gameLoop() {
+            update();
+            requestAnimationFrame(gameLoop);
+        }
+
+        avatar.onload = function() {
+            gameLoop();
+        };
+
+    </script>
 </body>
 </html>
