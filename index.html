@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+Ì<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,7 @@
         canvas {
             display: block;
             margin: 0 auto;
-            background-image: url('images/SFONDO.png'); /* Background dal file SFONDO.png */
+            background-image: url('/images/SFONDO.png'); /* Background dal file SFONDO.png */
             background-size: cover;
         }
     </style>
@@ -30,16 +30,50 @@
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
 
+        // Caricamento delle immagini con percorso assoluto
         const avatar = new Image();
-        avatar.src = 'images/ragazza.png';  // Avatar
+        avatar.src = '/images/ragazza.png';  // Avatar
 
         const bombImage = new Image();
-        bombImage.src = 'images/bomba.png';  // Bomba
+        bombImage.src = '/images/bomba.png';  // Bomba
 
         const palaceImage1 = new Image();
-        palaceImage1.src = 'images/palazzata.png';  // Palazzo 1
+        palaceImage1.src = '/images/palazzata.png';  // Palazzo 1
 
         const palaceImage2 = new Image();
-        palaceImage2.src = 'images/palazzata.png';  // Palazzo 2 (se è lo stesso palazzo, usa la stessa immagine)
+        palaceImage2.src = '/images/palazzata.png';  // Palazzo 2 (se è lo stesso palazzo, usa la stessa immagine)
 
-        let avatarX =
+        let avatarX = 350;
+        let avatarY = 500;
+
+        // Funzione di movimento del giocatore
+        function movePlayer(event) {
+            if (event.key === "ArrowRight") avatarX += 5;
+            if (event.key === "ArrowLeft") avatarX -= 5;
+        }
+
+        document.addEventListener("keydown", movePlayer);
+
+        // Funzione di aggiornamento del gioco
+        function updateGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Disegna lo sfondo
+            ctx.drawImage(canvasImg, 0, 0, canvas.width, canvas.height);
+
+            // Disegna il giocatore
+            ctx.drawImage(avatar, avatarX, avatarY, 50, 50);
+
+            // Aggiungi altre logiche di gioco qui (bombe, edifici, punteggio, ecc.)
+        }
+
+        // Funzione principale per il loop di gioco
+        function gameLoop() {
+            updateGame();
+            requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop();  // Avvia il loop di gioco
+    </script>
+</body>
+</html>
