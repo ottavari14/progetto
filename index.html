@@ -1,4 +1,4 @@
-Ì<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,7 @@
         canvas {
             display: block;
             margin: 0 auto;
-            background-image: url('/images/SFONDO.png'); /* Background dal file SFONDO.png */
+            background-image: url('images/SFONDO.png'); /* Background dal file SFONDO.png */
             background-size: cover;
         }
     </style>
@@ -30,18 +30,18 @@
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
 
-        // Caricamento delle immagini con percorso assoluto
+        // Caricamento delle immagini con percorso relativo
         const avatar = new Image();
-        avatar.src = '/images/ragazza.png';  // Avatar
+        avatar.src = 'images/ragazza.png';  // Avatar
 
         const bombImage = new Image();
-        bombImage.src = '/images/bomba.png';  // Bomba
+        bombImage.src = 'images/bomba.png';  // Bomba
 
         const palaceImage1 = new Image();
-        palaceImage1.src = '/images/palazzata.png';  // Palazzo 1
+        palaceImage1.src = 'images/palazzata.png';  // Palazzo 1
 
         const palaceImage2 = new Image();
-        palaceImage2.src = '/images/palazzata.png';  // Palazzo 2 (se è lo stesso palazzo, usa la stessa immagine)
+        palaceImage2.src = 'images/palazzata.png';  // Palazzo 2 (se è lo stesso palazzo, usa la stessa immagine)
 
         let avatarX = 350;
         let avatarY = 500;
