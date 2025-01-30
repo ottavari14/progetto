@@ -5,15 +5,23 @@ const ctx = canvas.getContext("2d");
 canvas.width = 800;
 canvas.height = 600;
 
-const canvasImg = new Image ();
-canvasImg.src= "sfondo.png";
+// Caricamento delle immagini
+const canvasImg = new Image();
+canvasImg.src = "images/SFONDO.png"; // Sfondo del canvas
 
-avatar.src = 'ragazza.png';
-bombImage.src = 'bomba.png';
-palaceImage1.src = 'chiesa.png';
-palaceImage2.src = 'palazzata.png';
+const avatarImg = new Image();
+avatarImg.src = "images/ragazza.png"; // Avatar del giocatore
 
+const bombImg = new Image();
+bombImg.src = "images/bomba.png"; // Immagine della bomba
 
+const building1Img = new Image();
+building1Img.src = "images/chiesa.png"; // Immagine del primo edificio
+
+const building2Img = new Image();
+building2Img.src = "images/palazzata.png"; // Immagine del secondo edificio
+
+// Oggetto player
 let player = {
     x: 350,
     y: 500,
@@ -33,9 +41,11 @@ let gameOver = false;
 let multiplier = 1;
 let level = 1;
 
+// Aggiungi un listener per il movimento del giocatore
 document.addEventListener("keydown", movePlayer);
 document.getElementById("retryButton").addEventListener("click", restartGame);
 
+// Funzione di movimento del giocatore
 function movePlayer(event) {
     if (gameOver) return;
     if (event.key === "ArrowRight") player.x += player.speed;
@@ -43,6 +53,7 @@ function movePlayer(event) {
     if (event.key === " " && !player.isJumping) jump();
 }
 
+// Funzione di salto
 function jump() {
     player.isJumping = true;
     player.jumpY = 0;
@@ -51,12 +62,12 @@ function jump() {
         player.jumpY += 10;
         if (player.jumpY >= player.jumpHeight) {
             clearInterval(jumpInterval);
-            setInterval(() => {
+            let fallInterval = setInterval(() => {
                 if (player.y < 500) {
                     player.y += 10;
                     player.jumpY -= 10;
                 } else {
-                    clearInterval(jumpInterval);
+                    clearInterval(fallInterval);
                     player.isJumping = false;
                 }
             }, 10);
@@ -64,6 +75,7 @@ function jump() {
     }, 10);
 }
 
+// Funzione per creare una nuova bomba
 function createBomb() {
     let x = Math.random() * (canvas.width - 50);
     bombs.push({
@@ -75,6 +87,7 @@ function createBomb() {
     });
 }
 
+// Funzione per creare un nuovo edificio
 function createBuilding() {
     let x = Math.random() * (canvas.width - 50);
     let buildingImg = Math.random() > 0.5 ? building1Img : building2Img;
@@ -87,20 +100,24 @@ function createBuilding() {
     });
 }
 
+// Funzione per aggiornare lo stato del gioco
 function updateGame() {
     if (gameOver) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw buildings
+    // Disegna lo sfondo
+    ctx.drawImage(canvasImg, 0, 0, canvas.width, canvas.height);
+
+    // Disegna gli edifici
     buildings.forEach(building => {
         ctx.drawImage(building.image, building.x, building.y, building.width, building.height);
     });
 
-    // Draw player
-    ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
+    // Disegna il giocatore
+    ctx.drawImage(avatarImg, player.x, player.y, player.width, player.height);
 
-    // Update and draw bombs
+    // Aggiorna e disegna le bombe
     bombs.forEach((bomb, index) => {
         bomb.y += bomb.speed;
         ctx.drawImage(bombImg, bomb.x, bomb.y, bomb.width, bomb.height);
@@ -110,7 +127,7 @@ function updateGame() {
             return;
         }
 
-        // Check for collision with player
+        // Verifica collisione con il giocatore
         if (
             bomb.x < player.x + player.width &&
             bomb.x + bomb.width > player.x &&
@@ -122,7 +139,7 @@ function updateGame() {
             updateMultiplier();
         }
 
-        // Check for collision with buildings
+        // Verifica collisione con gli edifici
         buildings.forEach((building, bIndex) => {
             if (
                 bomb.x < building.x + building.width &&
@@ -137,20 +154,21 @@ function updateGame() {
         });
     });
 
-    // Update and show score
+    // Aggiorna e mostra il punteggio
     ctx.fillStyle = "white";
     ctx.font = "20px Arial";
     ctx.fillText("Punteggio: " + score, 10, 30);
     ctx.fillText("Vite: " + lives, 10, 60);
     ctx.fillText("Livello: " + level, 10, 90);
 
-    // Game over condition
+    // Condizione di Game Over
     if (lives <= 0) {
         gameOver = true;
         document.getElementById("game-over").style.display = "block";
     }
 }
 
+// Funzione per aggiornare il moltiplicatore
 function updateMultiplier() {
     if (score >= 500) {
         multiplier = 2;
@@ -160,6 +178,7 @@ function updateMultiplier() {
     }
 }
 
+// Funzione per riavviare il gioco
 function restartGame() {
     gameOver = false;
     lives = 3;
@@ -172,6 +191,7 @@ function restartGame() {
     gameLoop();
 }
 
+// Funzione principale per il loop di gioco
 function gameLoop() {
     if (gameOver) return;
 
