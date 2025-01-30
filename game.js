@@ -191,24 +191,25 @@ function restartGame() {
     gameLoop();
 }
 
-// Funzione principale per il loop di gioco
-function gameLoop() {
-    if (gameOver) return;
+// Funzione per assicurarsi che le immagini siano caricate prima di iniziare il gioco
+function checkImagesLoaded() {
+    let loadedImages = 0;
+    const totalImages = 5;
 
-    if (Math.random() < 0.02) {
-        createBomb();
-    }
-    if (Math.random() < 0.01) {
-        createBuilding();
-    }
-
-    updateGame();
-
-    if (score > level * 500) {
-        level++;
+    function imageLoaded() {
+        loadedImages++;
+        if (loadedImages === totalImages) {
+            console.log("Tutte le immagini sono caricate. Inizia il gioco!");
+            gameLoop();
+        }
     }
 
-    requestAnimationFrame(gameLoop);
+    canvasImg.onload = imageLoaded;
+    avatarImg.onload = imageLoaded;
+    bombImg.onload = imageLoaded;
+    building1Img.onload = imageLoaded;
+    building2Img.onload = imageLoaded;
 }
 
-gameLoop();
+// Avvia il gioco dopo che tutte le immagini sono caricate
+checkImagesLoaded();
